@@ -1,4 +1,3 @@
- 
 // ══════════════════════════════════════════════════════
 //  FIREBASE — configuração e inicialização
 // ══════════════════════════════════════════════════════
@@ -6,7 +5,7 @@ import { initializeApp }                          from "https://www.gstatic.com/
 import { getFirestore, collection, doc,
          getDocs, addDoc, deleteDoc,
          onSnapshot, setDoc, getDoc,
-         query, orderBy }                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+         query }                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
  
 const firebaseConfig = {
   apiKey:            "AIzaSyC7pvlMpOdiLonmXmUb7E3H-FHY7KsRHj0",
@@ -40,32 +39,37 @@ let admLogado = false;
 // ══════════════════════════════════════════════════════
 //  CARREGAMENTO INICIAL — lê tudo do Firestore
 // ══════════════════════════════════════════════════════
-async function carregarTudo() {
+window.carregarTudo = async function carregarTudo() {
   mostrarLoading(true);
   try {
     // Config
     const snapConfig = await getDoc(docConfig);
     if (snapConfig.exists()) config = { ...config, ...snapConfig.data() };
  
-    // Posts (ordem: mais recente primeiro)
-    const snapPosts = await getDocs(query(colPosts, orderBy("data", "desc")));
-    posts = snapPosts.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Posts — busca simples, ordena no JS
+    const snapPosts = await getDocs(colPosts);
+    posts = snapPosts.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => new Date(b.data) - new Date(a.data));
  
-    // Recados
-    const snapRecados = await getDocs(query(colRecados, orderBy("data", "desc")));
-    recados = snapRecados.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Recados — busca simples, ordena no JS
+    const snapRecados = await getDocs(colRecados);
+    recados = snapRecados.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => new Date(b.data) - new Date(a.data));
  
     // Alunos
     const snapAlunos = await getDocs(colAlunos);
     alunos = snapAlunos.docs.map(d => ({ id: d.id, ...d.data() }));
  
-    // Eventos
-    const snapEventos = await getDocs(query(colEventos, orderBy("data", "desc")));
-    eventos = snapEventos.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Eventos — busca simples, ordena no JS
+    const snapEventos = await getDocs(colEventos);
+    eventos = snapEventos.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => new Date(b.data) - new Date(a.data));
  
   } catch (e) {
     console.error("Erro ao carregar dados:", e);
-    toast("Erro ao conectar com o banco 😢");
+    mostrarLoading(false);
+    toast("Erro: " + e.message);
+    return;
   }
   mostrarLoading(false);
   renderFeed();
@@ -542,4 +546,4 @@ function toast(msg) { window.toast(msg); }
 //  INICIALIZAÇÃO
 // ══════════════════════════════════════════════════════
 carregarTudo();
- 
+goPage("feed");
