@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🦊 Terceirão 2 Rousset</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<body>
+<div id="toast"></div>
+ 
+<!-- OVERLAY DE CARREGAMENTO -->
+<div id="loading-overlay" style="position:fixed;inset:0;background:rgba(17,16,24,0.92);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="font-size:3rem;animation:bounce 1s ease-in-out infinite;">🦊</div>
+  <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--orange);letter-spacing:0.1em;">Carregando...</div>
+</div>
+ 
+<!-- MENU MOBILE INFERIOR -->
+<nav class="mobile-nav">
+  <button class="mobile-nav-btn active" id="mob-feed"     onclick="goPage('feed')">    <span class="mob-icon">📸</span>Feed</button>
+  <button class="mobile-nav-btn"        id="mob-mural"    onclick="goPage('mural')">   <span class="mob-icon">💬</span>Mural</button>
+  <button class="mobile-nav-btn"        id="mob-alunos"   onclick="goPage('alunos')">  <span class="mob-icon">👥</span>Turma</button>
+  <button class="mobile-nav-btn"        id="mob-timeline" onclick="goPage('timeline')"><span class="mob-icon">📅</span>Tempo</button>
+  <button class="mobile-nav-btn mob-adm" id="mob-adm"     onclick="goPage('adm')">     <span class="mob-icon">⚡</span>ADM</button>
+</nav>
+ 
+<nav>
+  <div class="nav-logo">🦊 Terceirão 2</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('feed')">📸 Feed</button>
+    <button class="nav-tab" onclick="goPage('mural')">💬 Mural</button>
+    <button class="nav-tab" onclick="goPage('alunos')">👥 Turma</button>
+    <button class="nav-tab" onclick="goPage('timeline')">📅 Linha do Tempo</button>
+  </div>
+  <button class="nav-btn" onclick="goPage('adm')">⚡ ADM</button>
+</nav>
+ 
+<!-- ══ FEED ══ -->
+<div id="page-feed" class="page active">
+  <div class="hero">
+    <span class="hero-fox">🦊</span>
+    <h1>Terceirão 2<br/>Rousset</h1>
+    <p>A turma mais unida, animada e inteligente do Rousset. Unidos até a formatura! 🎓</p>
+    <div class="hero-tags">
+      <span class="hero-tag">🔥 Unidos</span>
+      <span class="hero-tag">🧠 Inteligentes</span>
+      <span class="hero-tag">😂 Engraçados</span>
+      <span class="hero-tag">🦊 Raposa</span>
+    </div>
+  </div>
+  <div class="wrap" style="padding-top: 0;">
+    <div class="countdown-section">
+      <div class="countdown-title">⏳ Contagem regressiva para a formatura</div>
+      <div class="countdown-grid">
+        <div class="countdown-item"><div class="countdown-num" id="cd-dias">--</div><div class="countdown-label">Dias</div></div>
+        <div class="countdown-item"><div class="countdown-num" id="cd-horas">--</div><div class="countdown-label">Horas</div></div>
+        <div class="countdown-item"><div class="countdown-num" id="cd-min">--</div><div class="countdown-label">Minutos</div></div>
+        <div class="countdown-item"><div class="countdown-num" id="cd-seg">--</div><div class="countdown-label">Segundos</div></div>
+      </div>
+      <p style="margin-top: 16px;font-size: 0.75rem;color: var(--muted);">📅 Formatura estimada: Dezembro 2026</p>
+    </div>
+    <div class="section-head"><div class="section-title">📸 <span>Momentos</span> da Turma</div></div>
+    <div class="feed-grid" id="feed-grid"></div>
+    <div id="feed-empty" class="empty" style="display: none;"><span class="empty-icon">📷</span><div class="empty-text">Nenhuma postagem ainda.<br/>O ADM pode adicionar pelo painel!</div></div>
+  </div>
+</div>
+ 
+<!-- ══ MURAL ══ -->
+<div id="page-mural" class="page">
+  <div class="wrap">
+    <div class="section-head"><div class="section-title">💬 Mural de <span>Recados</span></div></div>
+    <p style="color: var(--muted);font-size: 0.85rem;margin-bottom: 28px;">Deixe uma mensagem para a turma 🧡</p>
+    <!-- Formulário: só aparece para ADM -->
+    <div class="mural-form" id="mural-form-adm" style="display:none;">
+      <div class="mural-form-title">✍️ Novo Recado</div>
+      <div class="field"><label>Autor</label><input id="mural-nome" placeholder="Ex: João Silva"/></div>
+      <div class="field"><label>Mensagem</label><textarea id="mural-msg" placeholder="Deixe um recado para a turma..."></textarea></div>
+      <button class="btn" onclick="postarRecado()">Publicar Recado</button>
+    </div>
+ 
+    <!-- Aviso para visitantes -->
+    <div id="mural-aviso-visitante" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 24px;margin-bottom:24px;text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🔒</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:6px;">Apenas o ADM pode postar</div>
+      <p style="color:var(--muted);font-size:0.82rem;line-height:1.6;">Os recados da turma são publicados pelo administrador.<br/>Fique à vontade para ler os recados abaixo!</p>
+    </div>
+    <div class="mural-grid" id="mural-grid"></div>
+    <div id="mural-empty" class="empty" style="display: none;"><span class="empty-icon">💬</span><div class="empty-text">Seja o primeiro a deixar um recado!</div></div>
+  </div>
+</div>
+ 
+<!-- ══ ALUNOS ══ -->
+<div id="page-alunos" class="page">
+  <div class="wrap">
+    <div class="section-head"><div class="section-title">👥 Nossa <span>Turma</span></div></div>
+    <p style="color: var(--muted);font-size: 0.85rem;margin-bottom: 28px;">Os protagonistas do Terceirão 2 🦊</p>
+    <div class="alunos-grid" id="alunos-grid"></div>
+    <div id="alunos-empty" class="empty" style="display: none;"><span class="empty-icon">👥</span><div class="empty-text">Nenhum perfil ainda.<br/>Adicione pelo painel ADM!</div></div>
+  </div>
+</div>
+ 
+<!-- ══ TIMELINE ══ -->
+<div id="page-timeline" class="page">
+  <div class="wrap">
+    <div class="section-head"><div class="section-title">📅 Linha do <span>Tempo</span></div></div>
+    <p style="color: var(--muted);font-size: 0.85rem;margin-bottom: 32px;">Os momentos que ficam pra sempre 🎞️</p>
+    <div class="timeline" id="timeline-list"></div>
+    <div id="timeline-empty" class="empty" style="display: none;"><span class="empty-icon">📅</span><div class="empty-text">Nenhum evento ainda.<br/>Adicione pelo painel ADM!</div></div>
+  </div>
+</div>
+ 
+<!-- ══ ADM ══ -->
+<div id="page-adm" class="page">
+  <div class="wrap">
+ 
+    <!-- LOGIN -->
+    <div id="adm-login-screen">
+      <div class="adm-panel">
+        <div class="adm-login">
+          <span class="adm-login-icon">🔐</span>
+          <div class="adm-title">Painel ADM</div>
+          <p class="adm-sub">Acesso restrito para administradores da turma</p>
+          <div class="field">
+            <label>Senha ADM</label>
+            <input type="password" id="adm-senha" placeholder="••••••" onkeydown="if(event.key==='Enter') admLogin()"/>
+          </div>
+          <button class="btn" onclick="admLogin()" style="width: 100%;justify-content: center;">Entrar no Painel</button>
+          <p class="hint">Senha padrão: <strong></strong></p>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- CONTEÚDO -->
+    <div id="adm-content" style="display: none;">
+      <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 28px;">
+        <div>
+          <div style="font-family: 'Syne',sans-serif;font-size: 1.6rem;font-weight: 800;">Painel ADM 🦊</div>
+          <p style="color: var(--muted);font-size: 0.82rem;">Gerencie todo o conteúdo do blog</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="admLogout()">Sair</button>
+      </div>
+      <div style="display: flex;gap: 8px;margin-bottom: 28px;flex-wrap: wrap;">
+        <button class="btn btn-sm" onclick="admTab('posts')">📸 Posts</button>
+        <button class="btn btn-sm btn-outline" onclick="admTab('alunos')">👥 Alunos</button>
+        <button class="btn btn-sm btn-outline" onclick="admTab('eventos')">📅 Eventos</button>
+        <button class="btn btn-sm btn-outline" onclick="admTab('recados')">💬 Recados</button>
+        <button class="btn btn-sm btn-outline" onclick="admTab('config')">⚙️ Config</button>
+      </div>
+ 
+      <!-- TAB POSTS -->
+      <div id="adm-tab-posts">
+        <div class="adm-panel" style="max-width: 100%;margin-bottom: 24px;">
+          <div class="adm-title" style="font-size: 1rem;">➕ Nova Postagem</div>
+          <div class="field"><label>Autor</label><input id="post-autor" placeholder="Nome de quem está postando"/></div>
+          <div class="field"><label>Descrição</label><textarea id="post-desc" placeholder="Descreva o momento..."></textarea></div>
+          <div class="field"><label>Tags (separadas por vírgula)</label><input id="post-tags" placeholder="Ex: festa, turma, formatura"/></div>
+          <div class="field"><label>Tipo de mídia</label>
+            <select id="post-tipo" onchange="toggleMidiaInput()">
+              <option value="emoji">Sem mídia (só emoji)</option>
+              <option value="imagem_url">Imagem por URL</option>
+              <option value="video_url">Vídeo por URL</option>
+              <option value="imagem_upload">Upload de imagem</option>
+            </select>
+          </div>
+          <div id="midia-url-field" style="display: none;" class="field"><label>URL da mídia</label><input id="post-midia-url" placeholder="https://..."/></div>
+          <div id="midia-upload-field" style="display: none;" class="field"><label>Arquivo de imagem</label><input type="file" accept="image/*" id="post-midia-file" onchange="handleUploadPost(event)"/></div>
+          <div class="field"><label>Emoji do post (quando sem foto)</label><input id="post-emoji" placeholder="📸" maxlength="4" style="font-size: 1.5rem;"/></div>
+          <button class="btn" onclick="adicionarPost()">Publicar Post</button>
+        </div>
+        <div style="font-family: 'Syne',sans-serif;font-size: 1rem;font-weight: 800;margin-bottom: 16px;">Posts publicados</div>
+        <div id="adm-posts-list"></div>
+      </div>
+ 
+      <!-- TAB ALUNOS -->
+      <div id="adm-tab-alunos" style="display: none;">
+        <div class="adm-panel" style="max-width: 100%;margin-bottom: 24px;">
+          <div class="adm-title" style="font-size: 1rem;">➕ Adicionar Aluno</div>
+ 
+          <!-- Foto de perfil -->
+          <div class="field">
+            <label>📷 Foto de perfil</label>
+            <div style="display: flex;gap: 12px;align-items: flex-start;flex-wrap: wrap;">
+              <div style="flex: 1;min-width: 200px;">
+                <select id="aluno-foto-tipo" onchange="toggleAlunoFotoInput()" style="width: 100%;background: var(--dark2);border: 1.5px solid rgba(255,107,43,0.18);border-radius: 6px;color: var(--text);padding: 10px 14px;font-size: 0.88rem;font-family: 'Nunito',sans-serif;outline: none;appearance: none;margin-bottom: 8px;">
+                  <option value="emoji">Usar emoji/inicial</option>
+                  <option value="url">URL de imagem</option>
+                  <option value="upload">Upload de foto</option>
+                </select>
+                <div id="aluno-foto-url-field" style="display: none;">
+                  <input id="aluno-foto-url" placeholder="https://..." style="width: 100%;background: var(--dark2);border: 1.5px solid rgba(255,107,43,0.18);border-radius: 6px;color: var(--text);padding: 10px 14px;font-size: 0.88rem;font-family: 'Nunito',sans-serif;outline: none;" oninput="previewAlunoFoto()"/>
+                </div>
+                <div id="aluno-foto-upload-field" style="display: none;">
+                  <input type="file" accept="image/*" id="aluno-foto-file" onchange="handleUploadAluno(event)" style="width: 100%;background: var(--dark2);border: 1.5px solid rgba(255,107,43,0.18);border-radius: 6px;color: var(--text);padding: 8px 12px;font-size: 0.8rem;font-family: 'Nunito',sans-serif;outline: none;"/>
+                </div>
+              </div>
+              <div style="display: flex;flex-direction: column;align-items: center;gap: 6px;">
+                <img id="aluno-foto-preview" class="foto-preview" src="" alt="preview"/>
+                <div id="aluno-foto-preview-placeholder" style="width: 64px;height: 64px;border-radius: 50%;background: rgba(255,107,43,0.12);border: 2px dashed rgba(255,107,43,0.3);display: flex;align-items: center;justify-content: center;font-size: 1.5rem;">📷</div>
+              </div>
+            </div>
+          </div>
+ 
+          <!-- Dados do aluno -->
+          <div style="display: grid;grid-template-columns: 1fr 1fr;gap: 12px;">
+            <div class="field"><label>Nome completo</label><input id="aluno-nome" placeholder="Ex: João Silva"/></div>
+            <div class="field"><label>Apelido</label><input id="aluno-apelido" placeholder="Ex: Joãozinho"/></div>
+          </div>
+          <div class="field"><label>🎯 Profissão / Sonho</label><input id="aluno-profissao" placeholder="Ex: Futuro Engenheiro, Médico em formação..."/></div>
+          <div class="field"><label>Bio / Frase marcante</label><input id="aluno-bio" placeholder="Ex: O mais engraçado da turma 😂"/></div>
+          <button class="btn" onclick="adicionarAluno()">Adicionar Aluno</button>
+        </div>
+        <div id="adm-alunos-list"></div>
+      </div>
+ 
+      <!-- TAB EVENTOS -->
+      <div id="adm-tab-eventos" style="display: none;">
+        <div class="adm-panel" style="max-width: 100%;margin-bottom: 24px;">
+          <div class="adm-title" style="font-size: 1rem;">➕ Novo Evento</div>
+          <div style="display: grid;grid-template-columns: 1fr 1fr;gap: 12px;">
+            <div class="field"><label>Data</label><input type="date" id="evento-data"/></div>
+            <div class="field"><label>Título</label><input id="evento-titulo" placeholder="Ex: Dia do Estudante"/></div>
+          </div>
+          <div class="field"><label>Descrição</label><textarea id="evento-desc" placeholder="O que aconteceu?"></textarea></div>
+          <button class="btn" onclick="adicionarEvento()">Adicionar à Timeline</button>
+        </div>
+        <div id="adm-eventos-list"></div>
+      </div>
+ 
+      <!-- TAB RECADOS -->
+      <div id="adm-tab-recados" style="display: none;">
+        <div class="adm-panel" style="max-width:100%;margin-bottom:24px;">
+          <div class="adm-title" style="font-size:1rem;">💬 Gerenciar Recados do Mural</div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Aqui você pode remover recados indesejados.</p>
+          <div id="adm-recados-list"></div>
+        </div>
+      </div>
+ 
+      <!-- TAB CONFIG -->
+      <div id="adm-tab-config" style="display: none;">
+        <div class="adm-panel" style="max-width: 100%;">
+          <div class="adm-title" style="font-size: 1rem;">⚙️ Configurações</div>
+          <div class="field"><label>Data da Formatura</label><input type="date" id="config-formatura"/></div>
+          <div class="field"><label>Nome da Turma</label><input id="config-nome" placeholder="Ex: Terceirão 2 Rousset"/></div>
+          <div class="field">
+            <label>Nova senha ADM</label>
+            <input type="password" id="config-senha" placeholder="deixe em branco para manter"/>
+            <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">⚠️ Ao salvar com nova senha, a alteração é <strong style="color:var(--orange);">imediata</strong>. A próxima vez que entrar no ADM, use a nova senha.</p>
+          </div>
+          <button class="btn" onclick="salvarConfigBtn()">Salvar Configurações</button>
+          <hr/>
+          <button class="btn btn-danger" onclick="limparTudo()">🗑 Limpar todos os dados</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
