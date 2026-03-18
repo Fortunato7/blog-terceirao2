@@ -39,6 +39,29 @@ let admLogado = false;
 // ══════════════════════════════════════════════════════
 //  CARREGAMENTO INICIAL — lê tudo do Firestore
 // ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+//  TEMA — claro / escuro
+// ══════════════════════════════════════════════════════
+window.alternarTema = function() {
+  const escuro = document.body.classList.toggle("modo-escuro");
+  const btn = document.getElementById("theme-toggle-btn");
+  if (btn) btn.textContent = escuro ? "☀️ Claro" : "🌙 Escuro";
+  localStorage.setItem("tr2_tema", escuro ? "escuro" : "claro");
+};
+ 
+// Aplica tema salvo ao carregar
+(function() {
+  const tema = localStorage.getItem("tr2_tema");
+  if (tema === "escuro") {
+    document.body.classList.add("modo-escuro");
+    // Botão será atualizado após o DOM carregar
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("theme-toggle-btn");
+      if (btn) btn.textContent = "☀️ Claro";
+    });
+  }
+})();
+ 
 window.carregarTudo = async function carregarTudo() {
   mostrarLoading(true);
  
