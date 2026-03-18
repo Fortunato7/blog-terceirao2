@@ -232,7 +232,8 @@ function renderAlunos() {
   const empty = document.getElementById("alunos-empty");
   if (!alunos.length) { grid.innerHTML = ""; empty.style.display = "block"; return; }
   empty.style.display = "none";
-  grid.innerHTML = alunos.map(a => {
+  const ordenados = [...alunos].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  grid.innerHTML = ordenados.map(a => {
     let avatar = a.foto
       ? `<img class="aluno-foto" src="${a.foto}" alt="${a.nome}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
          <div class="aluno-foto-placeholder" style="display:none;">${a.emoji || a.nome[0].toUpperCase()}</div>`
