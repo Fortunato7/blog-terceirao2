@@ -44,8 +44,12 @@ let admLogado = false;
 // ══════════════════════════════════════════════════════
 window.alternarTema = function() {
   const escuro = document.body.classList.toggle("modo-escuro");
+  // Botão desktop
   const btn = document.getElementById("theme-toggle-btn");
   if (btn) btn.textContent = escuro ? "☀️ Claro" : "🌙 Escuro";
+  // Ícone mobile
+  const mobIcon = document.getElementById("mob-tema-icon");
+  if (mobIcon) mobIcon.textContent = escuro ? "☀️" : "🌙";
   localStorage.setItem("tr2_tema", escuro ? "escuro" : "claro");
 };
  
@@ -54,10 +58,11 @@ window.alternarTema = function() {
   const tema = localStorage.getItem("tr2_tema");
   if (tema === "escuro") {
     document.body.classList.add("modo-escuro");
-    // Botão será atualizado após o DOM carregar
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("theme-toggle-btn");
       if (btn) btn.textContent = "☀️ Claro";
+      const mobIcon = document.getElementById("mob-tema-icon");
+      if (mobIcon) mobIcon.textContent = "☀️";
     });
   }
 })();
