@@ -47,7 +47,7 @@
       <span class="hero-tag">🔥 Unidos</span>
       <span class="hero-tag">🧠 Inteligentes</span>
       <span class="hero-tag">😂 Engraçados</span>
-      <span class="hero-tag">🦊 Os mais mídias</span>
+      <span class="hero-tag">🦊 Raposa</span>
     </div>
   </div>
   <div class="wrap" style="padding-top: 0;">
@@ -127,7 +127,7 @@
             <input type="password" id="adm-senha" placeholder="••••••" onkeydown="if(event.key==='Enter') admLogin()"/>
           </div>
           <button class="btn" onclick="admLogin()" style="width: 100%;justify-content: center;">Entrar no Painel</button>
-          <p class="hint"> <strong></strong></p>
+          <p class="hint">Senha padrão: <strong>rousset2025</strong></p>
         </div>
       </div>
     </div>
@@ -230,9 +230,17 @@
  
       <!-- TAB RECADOS -->
       <div id="adm-tab-recados" style="display: none;">
+        <!-- Formulário novo recado -->
         <div class="adm-panel" style="max-width:100%;margin-bottom:24px;">
-          <div class="adm-title" style="font-size:1rem;">💬 Gerenciar Recados do Mural</div>
-          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Aqui você pode remover recados indesejados.</p>
+          <div class="adm-title" style="font-size:1rem;">✍️ Publicar Recado</div>
+          <div class="field"><label>Autor</label><input id="mural-nome" placeholder="Ex: João Silva"/></div>
+          <div class="field"><label>Mensagem</label><textarea id="mural-msg" placeholder="Escreva o recado..."></textarea></div>
+          <button class="btn" onclick="postarRecado()">Publicar Recado</button>
+        </div>
+        <!-- Lista de recados -->
+        <div class="adm-panel" style="max-width:100%;">
+          <div class="adm-title" style="font-size:1rem;">💬 Recados publicados</div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Clique em ✕ para remover um recado.</p>
           <div id="adm-recados-list"></div>
         </div>
       </div>
