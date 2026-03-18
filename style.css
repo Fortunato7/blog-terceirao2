@@ -1,12 +1,12 @@
 :root {
   --orange: #ff6b2b;
   --orange2: #ff9a5c;
-  --dark: #111018;
-  --dark2: #1a1826;
-  --card: #201e2e;
-  --border: rgba(255,107,43,0.18);
-  --text: #f0eeff;
-  --muted: #8b8aa0;
+  --dark: #ffffff;
+  --dark2: #f0f0f5;
+  --card: #ffffff;
+  --border: rgba(255,107,43,0.35);
+  --text: #111018;
+  --muted: #555566;
   --red: #e05555;
 }
  
@@ -29,7 +29,7 @@ body {
 }
  
 ::-webkit-scrollbar-track {
-  background: var(--dark);
+  background: #f0f0f5;
 }
  
 ::-webkit-scrollbar-thumb {
